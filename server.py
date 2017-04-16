@@ -12,33 +12,29 @@ class Usuarios(db.Model):
 db.create_all()
 def Main():
     host = "127.0.0.1"
-    port = 5011
-    mySocket = socket.socket()
-    mySocket.bind((host,port))
-
-    mySocket.listen(1)
-    conn, addr = mySocket.accept()
-    print ("Connection from: " + str(addr))
+    port = 5021
     while True:
-            data = conn.recv(1024).decode()
-            data = str(data)
-            if db.session.query(Usuarios.id).filter_by(usuario=data).scalar() is None:
-                    usuario = Usuarios()
-                    usuario.usuario = data
-                    db.session.add(usuario)
-                    db.session.commit()
-                    msg='Dato Guardado'
-                    conn.send(msg.encode())
-                    break
-            else:
-                    conn.send('Dato Ya existente'.encode()) 
-                    break
+        mySocket = socket.socket()
+        mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        mySocket.bind((host,port))
+        mySocket.listen(1)
+        conn, addr = mySocket.accept()
+        print ("Connection from: " + str(addr))
+        data = conn.recv(1024).decode()
+        data = str(data)
+        if db.session.query(Usuarios.id).filter_by(usuario=data).scalar() is None:
+            usuario = Usuarios()
+            usuario.usuario = data
+            db.session.add(usuario)
+            db.session.commit()
+            conn.send('Dato Guardado'.encode())
+        else:
+            conn.send('Dato Ya existente'.encode()) 
 
-            if not data:
-                    break
-            
-
-    conn.close()
-
+        conn.close()
+        mySocket.close()    
+            #if not data:
+               
+    
 if __name__ == '__main__':
     Main()
