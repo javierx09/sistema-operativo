@@ -4,7 +4,7 @@ import socket
 import sys
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:92wzjpow@127.0.0.1/testo'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:(password)@127.0.0.1/testo'
 db = SQLAlchemy(app)
 class Usuarios(db.Model):
     id = db.Column(db.Integer, primary_key=True)
