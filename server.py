@@ -4,8 +4,10 @@ import socket
 import sys
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:(password)@127.0.0.1/testo'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:(escribir password)@127.0.0.1'
 db = SQLAlchemy(app)
+db.engine.execute('CREATE DATABASE IF NOT EXISTS ore;')
+db.engine.execute('USE ore;')
 class Usuarios(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(80), unique=True)
